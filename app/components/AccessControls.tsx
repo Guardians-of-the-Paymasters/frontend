@@ -23,7 +23,7 @@ const AccessControls = ({ canBeOpened, onCompleted }: AccessControlsProps) => {
                     </Text>
                     <AddressInputFields addressesState={{ addresses, setAddresses }} />
                 </div>
-                <Button text="Next" onClick={onCompleted} />
+                <Button text="Next" onClick={onCompleted} disabled={addresses[0].length == 0} />
             </div>
         </SectionAccordion>
     );
