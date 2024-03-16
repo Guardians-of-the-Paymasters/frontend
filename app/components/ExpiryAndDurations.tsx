@@ -17,7 +17,6 @@ const ExpiryAndDurations = ({ canBeOpened, onCompleted }: ExpiryAndDurationsProp
     const [_, dispatch] = useActivity();
 
     const handleSubmit = () => {
-        console.log("policyStart", policyStart);
         const startTimestamp = new Date(policyStart).getTime() / 1000; // Convert to seconds
         const endTimestamp = new Date(policyEnd).getTime() / 1000; // Convert to seconds
 
