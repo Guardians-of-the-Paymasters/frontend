@@ -51,8 +51,6 @@ const AddressInputFields = ({ addresses }: AddressInputFieldsProps) => {
         }
     }, []);
 
-    console.log("addresses", addresses);
-
     return (
         <div className="w-3/5 cursor-pointer rounded-lg border border-zinc-800 bg-zinc-900 px-6 py-2 text-white">
             {addresses.map((address, index) => (

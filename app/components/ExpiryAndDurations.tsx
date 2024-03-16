@@ -5,16 +5,30 @@ import Form from "./common/Form";
 import Button from "./common/Button";
 import { useState } from "react";
 import { useActivity } from "../contexts";
+import axios from "axios";
 
 interface ExpiryAndDurationsProps {
     canBeOpened: boolean;
-    onCompleted: () => void;
 }
 
-const ExpiryAndDurations = ({ canBeOpened, onCompleted }: ExpiryAndDurationsProps) => {
+const ExpiryAndDurations = ({ canBeOpened }: ExpiryAndDurationsProps) => {
     const [policyStart, setPolicyStart] = useState<string>("");
     const [policyEnd, setPolicyEnd] = useState<string>("");
-    const [_, dispatch] = useActivity();
+    const [
+        {
+            smartContractAddress,
+            functionsSelected,
+            abi,
+            policyName,
+            nftIds,
+            policyEndTimestamp,
+            policyStartTimestamp,
+            addresses,
+            maxGasPerPolicy,
+            maxGasPerUser,
+        },
+        dispatch,
+    ] = useActivity();
 
     const handleSubmit = () => {
         const startTimestamp = new Date(policyStart).getTime() / 1000; // Convert to seconds
@@ -23,7 +37,7 @@ const ExpiryAndDurations = ({ canBeOpened, onCompleted }: ExpiryAndDurationsProp
         dispatch({ type: "updatePolicyStart", policyStart: startTimestamp.toString() });
         dispatch({ type: "updatePolicyEnd", policyEnd: endTimestamp.toString() });
 
-        onCompleted(); // Proceed to next step or validation
+        submit();
     };
 
     const handlePolicyStart = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,6 +48,27 @@ const ExpiryAndDurations = ({ canBeOpened, onCompleted }: ExpiryAndDurationsProp
         setPolicyEnd(e.target.value);
     };
 
+    const submit = async () => {
+        const response = await axios.post("/api/smartContractPolicy", {
+            contractAddress: smartContractAddress,
+            sponsoredMethods: functionsSelected,
+            abi: abi,
+            policyName: policyName,
+            maxGasPerUser: maxGasPerUser,
+            maxGasPerPolicy: maxGasPerPolicy,
+            allowlist: addresses,
+            nftIds: nftIds,
+            policyStart: policyStartTimestamp,
+            policyEnd: policyEndTimestamp,
+        });
+
+        console.log(response);
+
+        if (response.status === 200) {
+            alert("Policy created successfully");
+        }
+    };
+
     return (
         <SectionAccordion disabled={!canBeOpened} title="Expiry and Durations">
             <div className="flex w-full flex-col gap-14">
@@ -41,7 +76,7 @@ const ExpiryAndDurations = ({ canBeOpened, onCompleted }: ExpiryAndDurationsProp
                     <Form title="Policy Start" className="!w-full" onChange={handlePolicyStart} placeholder="" type="datetime-local" />
                     <Form title="Policy End" className="!w-full" placeholder="" type="datetime-local" onChange={handlePolicyEnd} />
                 </div>
-                <Button text="Next" onClick={handleSubmit} />
+                <Button text="Submit" onClick={handleSubmit} />
             </div>
         </SectionAccordion>
     );

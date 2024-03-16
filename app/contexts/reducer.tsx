@@ -10,8 +10,8 @@ export type Action =
     | { type: "updateMaxTransactionsPerPolicy"; maxTransactionsPerPolicy: State["maxTransactionsPerPolicy"] }
     | { type: "updateMaxGasPerUser"; maxGasPerUser: State["maxGasPerUser"] }
     | { type: "updateMaxGasPerPolicy"; maxGasPerPolicy: State["maxGasPerPolicy"] }
-    | { type: "updatePolicyStart"; policyStart: State["policyStart"] }
-    | { type: "updatePolicyEnd"; policyEnd: State["policyEnd"] }
+    | { type: "updatePolicyStart"; policyStart: State["policyStartTimestamp"] }
+    | { type: "updatePolicyEnd"; policyEnd: State["policyEndTimestamp"] }
     | { type: "updateAddresses"; addresses: State["addresses"] };
 
 export const reducer = (state: State, action: Action): State => {
@@ -64,12 +64,12 @@ export const reducer = (state: State, action: Action): State => {
         case "updatePolicyStart":
             return {
                 ...state,
-                policyStart: action.policyStart,
+                policyStartTimestamp: action.policyStart,
             };
         case "updatePolicyEnd":
             return {
                 ...state,
-                policyEnd: action.policyEnd,
+                policyEndTimestamp: action.policyEnd,
             };
         case "updateAddresses":
             return {

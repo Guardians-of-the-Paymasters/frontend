@@ -22,7 +22,7 @@ export default function Home() {
                 <SpendingRules canBeOpened={completed > 0} onCompleted={() => handleNext(2)} />
                 <SmartContractRules canBeOpened={completed > 1} onCompleted={() => handleNext(3)} />
                 <AccessControls canBeOpened={completed > 2} onCompleted={() => handleNext(4)} />
-                <ExpiryAndDurations canBeOpened={completed > 3} onCompleted={() => handleNext(5)} />
+                <ExpiryAndDurations canBeOpened={completed > 3} />
             </div>
         </ActivityContextProvider>
     );

@@ -9,8 +9,8 @@ export interface State {
     maxTransactionsPerPolicy: number;
     maxGasPerUser: number;
     maxGasPerPolicy: number;
-    policyStart: string;
-    policyEnd: string;
+    policyStartTimestamp: string;
+    policyEndTimestamp: string;
 }
 
 export const initialState: State = {
@@ -24,6 +24,6 @@ export const initialState: State = {
     maxTransactionsPerPolicy: 0,
     maxGasPerUser: 0,
     maxGasPerPolicy: 0,
-    policyStart: "",
-    policyEnd: "",
+    policyStartTimestamp: "",
+    policyEndTimestamp: "",
 };
