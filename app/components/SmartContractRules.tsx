@@ -5,6 +5,7 @@ import Button from "./common/Button";
 import Form from "./common/Form";
 import Text from "./common/Text";
 import { useEffect, useState } from "react";
+import IdsInputFields from "./NftIdsInputField";
 
 interface AbiItem {
     type: string;
@@ -21,6 +22,7 @@ const SmartContractRules = ({ canBeOpened, onCompleted }: SmartContractRulesProp
     const [functionNames, setFunctionNames] = useState<string[]>([]);
     const [selectedFunctionNames, setSelectedFunctionNames] = useState<string[]>([]);
     const [abiString, setAbiString] = useState<string>("");
+    const [ids, setIds] = useState<string[]>([""]);
 
     function getFunctionNamesWithInputsFromABIString(abiString: string): string[] {
         try {
@@ -58,7 +60,12 @@ const SmartContractRules = ({ canBeOpened, onCompleted }: SmartContractRulesProp
         <SectionAccordion disabled={!canBeOpened} title="Smart Contract Rules">
             <div className="flex flex-col gap-10">
                 <Form title="Smart Contract Allowed to Spend Gas" placeholder="0xabc...efg" />
-                <Form title="NFT #ID to own to spend gas" placeholder="0" type="number" />
+                <div className="flex flex-col gap-2.5">
+                    <Text size="caption1" className="uppercase text-white">
+                        NFT Ids
+                    </Text>
+                    <IdsInputFields idsState={{ ids, setIds }} />
+                </div>
                 <div className="flex items-center justify-between gap-8">
                     <div className="flex flex-col gap-4">
                         <Text size="subtitle2" className="uppercase text-white">
