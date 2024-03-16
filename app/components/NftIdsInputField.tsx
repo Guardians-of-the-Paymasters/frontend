@@ -2,16 +2,14 @@
 
 import { useEffect, useRef } from "react";
 import Text from "./common/Text";
+import { useActivity } from "../contexts";
 
 interface IdsInputFieldsProps {
-    idsState: {
-        ids: string[];
-        setIds: React.Dispatch<React.SetStateAction<string[]>>;
-    };
+    ids: string[];
 }
 
-const IdsInputFields = ({ idsState }: IdsInputFieldsProps) => {
-    const { ids, setIds } = idsState;
+const IdsInputFields = ({ ids }: IdsInputFieldsProps) => {
+    const [_, dispatch] = useActivity();
 
     const inputRefs = useRef<HTMLInputElement[]>([]);
 
@@ -20,7 +18,7 @@ const IdsInputFields = ({ idsState }: IdsInputFieldsProps) => {
             event.preventDefault();
 
             const newIds = [...ids, ""];
-            setIds(newIds);
+            dispatch({ type: "updateNftIds", nftIds: newIds });
 
             // Focus the next input after the state update
             setTimeout(() => {
@@ -34,7 +32,7 @@ const IdsInputFields = ({ idsState }: IdsInputFieldsProps) => {
     const handleChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
         const newIds = [...ids];
         newIds[index] = event.target.value;
-        setIds(newIds);
+        dispatch({ type: "updateNftIds", nftIds: newIds });
     };
 
     useEffect(() => {

@@ -5,6 +5,7 @@ import SectionAccordion from "./common/SectionAccordion";
 import Text from "./common/Text";
 import AddressInputFields from "./AddressInputField";
 import Button from "./common/Button";
+import { useActivity } from "../contexts";
 
 interface AccessControlsProps {
     canBeOpened: boolean;
@@ -12,7 +13,7 @@ interface AccessControlsProps {
 }
 
 const AccessControls = ({ canBeOpened, onCompleted }: AccessControlsProps) => {
-    const [addresses, setAddresses] = useState<string[]>([""]);
+    const [{ addresses }] = useActivity();
 
     return (
         <SectionAccordion disabled={!canBeOpened} title="Access Controls">
@@ -21,7 +22,7 @@ const AccessControls = ({ canBeOpened, onCompleted }: AccessControlsProps) => {
                     <Text size="caption1" className="uppercase text-white">
                         Allow list
                     </Text>
-                    <AddressInputFields addressesState={{ addresses, setAddresses }} />
+                    <AddressInputFields addresses={addresses} />
                 </div>
                 <Button text="Next" onClick={onCompleted} disabled={addresses[0].length == 0} />
             </div>

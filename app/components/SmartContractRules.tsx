@@ -6,6 +6,7 @@ import Form from "./common/Form";
 import Text from "./common/Text";
 import { useEffect, useState } from "react";
 import IdsInputFields from "./NftIdsInputField";
+import { useActivity } from "../contexts";
 
 interface AbiItem {
     type: string;
@@ -19,11 +20,8 @@ interface SmartContractRulesProps {
 }
 
 const SmartContractRules = ({ canBeOpened, onCompleted }: SmartContractRulesProps) => {
-    const [smartContractAddress, setSmartContractAddress] = useState<string>("");
     const [functionNames, setFunctionNames] = useState<string[]>([]);
-    const [selectedFunctionNames, setSelectedFunctionNames] = useState<string[]>([]);
-    const [abiString, setAbiString] = useState<string>("");
-    const [ids, setIds] = useState<string[]>([""]);
+    const [{ smartContractAddress, functionsSelected, abi, nftIds }, dispatch] = useActivity();
 
     function getFunctionNamesWithInputsFromABIString(abiString: string): string[] {
         try {
@@ -42,30 +40,35 @@ const SmartContractRules = ({ canBeOpened, onCompleted }: SmartContractRulesProp
     }
 
     useEffect(() => {
-        if (abiString.length > 0) setFunctionNames(getFunctionNamesWithInputsFromABIString(abiString));
-    }, [abiString]);
+        if (abi.length > 0) setFunctionNames(getFunctionNamesWithInputsFromABIString(abi));
+    }, [abi]);
 
     const handleFunctionSelectionChange = (functionName: string) => {
-        setSelectedFunctionNames((prevSelected) => {
-            if (prevSelected.includes(functionName)) {
-                // If already selected, remove it from the selection
-                return prevSelected.filter((name) => name !== functionName);
-            } else {
-                // Otherwise, add it to the selection
-                return [...prevSelected, functionName];
-            }
+        dispatch({
+            type: "updateFunctionsSelected",
+            functionsSelected: functionsSelected.includes(functionName)
+                ? functionsSelected.filter((name) => name !== functionName)
+                : [...functionsSelected, functionName],
         });
+    };
+
+    const handleSmartContractAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        dispatch({ type: "updateSmartContractAddress", smartContractAddress: e.target.value });
+    };
+
+    const handleAbiChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        dispatch({ type: "updateAbi", abi: e.target.value });
     };
 
     return (
         <SectionAccordion disabled={!canBeOpened} title="Smart Contract Rules">
             <div className="flex flex-col gap-10">
-                <Form onChange={setSmartContractAddress} title="Smart Contract Allowed to Spend Gas" placeholder="0xabc...efg" />
+                <Form onChange={handleSmartContractAddressChange} title="Smart Contract Allowed to Spend Gas" placeholder="0xabc...efg" />
                 <div className="flex flex-col gap-2.5">
                     <Text size="caption1" className="uppercase text-white">
                         NFT Ids
                     </Text>
-                    <IdsInputFields idsState={{ ids, setIds }} />
+                    <IdsInputFields ids={nftIds} />
                 </div>
                 <div className="flex items-center justify-between gap-8">
                     <div className="flex flex-col gap-4">
@@ -74,7 +77,7 @@ const SmartContractRules = ({ canBeOpened, onCompleted }: SmartContractRulesProp
                         </Text>
                         <Form
                             className="!w-full"
-                            onChange={setAbiString}
+                            textAreaOnChange={handleAbiChange}
                             title="Smart contract abi"
                             placeholder={`[{
                             inputs: [
@@ -100,7 +103,7 @@ const SmartContractRules = ({ canBeOpened, onCompleted }: SmartContractRulesProp
                                     <div key={funcName} className="flex items-center gap-4">
                                         <input
                                             type="checkbox"
-                                            checked={selectedFunctionNames.includes(funcName)}
+                                            checked={functionsSelected.includes(funcName)}
                                             onChange={() => handleFunctionSelectionChange(funcName)}
                                         />
                                         <Text size="subtitle2" className="text-white">
@@ -113,7 +116,7 @@ const SmartContractRules = ({ canBeOpened, onCompleted }: SmartContractRulesProp
                     )}
                 </div>
 
-                <Button text="Next" disabled={smartContractAddress.length == 0 || ids[0].length == 0} onClick={onCompleted} />
+                <Button text="Next" disabled={smartContractAddress.length == 0 || nftIds[0].length == 0} onClick={onCompleted} />
             </div>
         </SectionAccordion>
     );

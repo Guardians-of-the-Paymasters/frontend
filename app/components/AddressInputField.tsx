@@ -3,16 +3,14 @@
 import { useEffect, useRef } from "react";
 import Text from "./common/Text";
 import { ethers } from "ethers";
+import { useActivity } from "../contexts";
 
 interface AddressInputFieldsProps {
-    addressesState: {
-        addresses: string[];
-        setAddresses: React.Dispatch<React.SetStateAction<string[]>>;
-    };
+    addresses: string[];
 }
 
-const AddressInputFields = ({ addressesState }: AddressInputFieldsProps) => {
-    const { addresses, setAddresses } = addressesState;
+const AddressInputFields = ({ addresses }: AddressInputFieldsProps) => {
+    const [_, dispatch] = useActivity();
 
     const inputRefs = useRef<HTMLInputElement[]>([]);
 
@@ -25,7 +23,7 @@ const AddressInputFields = ({ addressesState }: AddressInputFieldsProps) => {
             // Check if the current address is a valid Ethereum address
             if (ethers.isAddress(currentAddress)) {
                 const newAddresses = [...addresses, ""];
-                setAddresses(newAddresses);
+                dispatch({ type: "updateAddresses", addresses: newAddresses });
 
                 // Focus the next input after the state update
                 setTimeout(() => {
@@ -43,7 +41,7 @@ const AddressInputFields = ({ addressesState }: AddressInputFieldsProps) => {
     const handleChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
         const newAddresses = [...addresses];
         newAddresses[index] = event.target.value;
-        setAddresses(newAddresses);
+        dispatch({ type: "updateAddresses", addresses: newAddresses });
     };
 
     useEffect(() => {
@@ -52,6 +50,8 @@ const AddressInputFields = ({ addressesState }: AddressInputFieldsProps) => {
             inputRefs.current[0].focus();
         }
     }, []);
+
+    console.log("addresses", addresses);
 
     return (
         <div className="w-3/5 cursor-pointer rounded-lg border border-zinc-800 bg-zinc-900 px-6 py-2 text-white">
