@@ -19,6 +19,7 @@ interface SmartContractRulesProps {
 }
 
 const SmartContractRules = ({ canBeOpened, onCompleted }: SmartContractRulesProps) => {
+    const [smartContractAddress, setSmartContractAddress] = useState<string>("");
     const [functionNames, setFunctionNames] = useState<string[]>([]);
     const [selectedFunctionNames, setSelectedFunctionNames] = useState<string[]>([]);
     const [abiString, setAbiString] = useState<string>("");
@@ -59,7 +60,7 @@ const SmartContractRules = ({ canBeOpened, onCompleted }: SmartContractRulesProp
     return (
         <SectionAccordion disabled={!canBeOpened} title="Smart Contract Rules">
             <div className="flex flex-col gap-10">
-                <Form title="Smart Contract Allowed to Spend Gas" placeholder="0xabc...efg" />
+                <Form onChange={setSmartContractAddress} title="Smart Contract Allowed to Spend Gas" placeholder="0xabc...efg" />
                 <div className="flex flex-col gap-2.5">
                     <Text size="caption1" className="uppercase text-white">
                         NFT Ids
@@ -112,7 +113,7 @@ const SmartContractRules = ({ canBeOpened, onCompleted }: SmartContractRulesProp
                     )}
                 </div>
 
-                <Button text="Next" onClick={onCompleted} />
+                <Button text="Next" disabled={smartContractAddress.length == 0 || ids[0].length == 0} onClick={onCompleted} />
             </div>
         </SectionAccordion>
     );

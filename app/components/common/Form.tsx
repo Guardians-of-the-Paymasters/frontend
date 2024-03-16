@@ -5,7 +5,7 @@ type InputType = "text" | "number" | "textarea" | "datetime-local";
 interface FormProps {
     title: string;
     placeholder: string;
-    onChange?: (value: string) => void;
+    onChange?: (value: any) => void;
     type?: InputType;
     className?: string;
 }
