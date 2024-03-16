@@ -2,17 +2,16 @@
 
 import { useEffect, useRef } from "react";
 import Text from "./common/Text";
-import { ethers } from "ethers";
 
-interface AddressInputFieldsProps {
-    addressesState: {
-        addresses: string[];
-        setAddresses: React.Dispatch<React.SetStateAction<string[]>>;
+interface IdsInputFieldsProps {
+    idsState: {
+        ids: string[];
+        setIds: React.Dispatch<React.SetStateAction<string[]>>;
     };
 }
 
-const AddressInputFields = ({ addressesState }: AddressInputFieldsProps) => {
-    const { addresses, setAddresses } = addressesState;
+const IdsInputFields = ({ idsState }: IdsInputFieldsProps) => {
+    const { ids, setIds } = idsState;
 
     const inputRefs = useRef<HTMLInputElement[]>([]);
 
@@ -20,30 +19,22 @@ const AddressInputFields = ({ addressesState }: AddressInputFieldsProps) => {
         if (event.key === "Enter") {
             event.preventDefault();
 
-            const currentAddress = addresses[index];
+            const newIds = [...ids, ""];
+            setIds(newIds);
 
-            // Check if the current address is a valid Ethereum address
-            if (ethers.isAddress(currentAddress)) {
-                const newAddresses = [...addresses, ""];
-                setAddresses(newAddresses);
-
-                // Focus the next input after the state update
-                setTimeout(() => {
-                    if (inputRefs.current[index + 1]) {
-                        inputRefs.current[index + 1].focus();
-                    }
-                }, 0);
-            } else {
-                // Handle invalid address input (e.g., show an error message)
-                alert("Please enter a valid Ethereum address.");
-            }
+            // Focus the next input after the state update
+            setTimeout(() => {
+                if (inputRefs.current[index + 1]) {
+                    inputRefs.current[index + 1].focus();
+                }
+            }, 0);
         }
     };
 
     const handleChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
-        const newAddresses = [...addresses];
-        newAddresses[index] = event.target.value;
-        setAddresses(newAddresses);
+        const newIds = [...ids];
+        newIds[index] = event.target.value;
+        setIds(newIds);
     };
 
     useEffect(() => {
@@ -55,14 +46,14 @@ const AddressInputFields = ({ addressesState }: AddressInputFieldsProps) => {
 
     return (
         <div className="w-3/5 cursor-pointer rounded-lg border border-zinc-800 bg-zinc-900 px-6 py-2 text-white">
-            {addresses.map((address, index) => (
+            {ids.map((id, index) => (
                 <div key={index} className="flex items-center">
                     <Text size="caption1" className="uppercase text-zinc-400">
                         {index + 1}
                     </Text>
                     <input
                         type="text"
-                        value={address}
+                        value={id}
                         onChange={(event) => handleChange(index, event)}
                         onKeyDown={(event) => handleKeyPress(index, event)}
                         ref={(el) => {
@@ -70,7 +61,7 @@ const AddressInputFields = ({ addressesState }: AddressInputFieldsProps) => {
                                 inputRefs.current[index] = el;
                             }
                         }} // Assign the input element to the refs array
-                        placeholder="Enter address and press Enter"
+                        placeholder="NFT #ID to own to spend gas"
                         className="w-11/12 bg-transparent px-6 py-2 outline-none placeholder:text-zinc-600 active:border-zinc-500"
                     />
                 </div>
@@ -79,4 +70,4 @@ const AddressInputFields = ({ addressesState }: AddressInputFieldsProps) => {
     );
 };
 
-export default AddressInputFields;
+export default IdsInputFields;
