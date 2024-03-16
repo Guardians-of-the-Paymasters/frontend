@@ -6,13 +6,16 @@ import Text from "./common/Text";
 import AddressInputFields from "./AddressInputField";
 import Button from "./common/Button";
 
-const AccessControls = () => {
+interface AccessControlsProps {
+    canBeOpened: boolean;
+    onCompleted: () => void;
+}
+
+const AccessControls = ({ canBeOpened, onCompleted }: AccessControlsProps) => {
     const [addresses, setAddresses] = useState<string[]>([""]);
-    const [moveToNext, setMoveToNext] = useState<boolean>(false);
-    const [allAddressesAreValid, setAllAddressesAreValid] = useState<boolean>(false);
 
     return (
-        <SectionAccordion title="Access Controls">
+        <SectionAccordion disabled={!canBeOpened} title="Access Controls">
             <div className="flex flex-col gap-14">
                 <div className="flex flex-col gap-3">
                     <Text size="caption1" className="uppercase text-white">
@@ -20,7 +23,7 @@ const AccessControls = () => {
                     </Text>
                     <AddressInputFields addressesState={{ addresses, setAddresses }} />
                 </div>
-                <Button text="Next" onClick={() => setMoveToNext(true)} />
+                <Button text="Next" onClick={onCompleted} />
             </div>
         </SectionAccordion>
     );

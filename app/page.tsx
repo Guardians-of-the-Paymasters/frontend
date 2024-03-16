@@ -1,20 +1,24 @@
-import Image from "next/image";
-import SectionAccordion from "./components/common/SectionAccordion";
-import Text from "./components/common/Text";
+"use client";
+
 import PolicyDetails from "./components/PolicyDetails";
-import Form from "./components/common/Form";
 import SpendingRules from "./components/SpendingRules";
-import Button from "./components/common/Button";
 import SmartContractRules from "./components/SmartContractRules";
 import AccessControls from "./components/AccessControls";
+import { useState } from "react";
 
 export default function Home() {
+    const [completed, setCompleted] = useState(0);
+
+    const handleNext = (sectionNumber: number) => {
+        setCompleted(sectionNumber);
+    };
+
     return (
         <div className="bg-primary-black flex min-h-screen w-screen flex-col px-20 py-16 xl:px-36 xl:py-20">
-            <PolicyDetails />
-            <SpendingRules />
-            <SmartContractRules />
-            <AccessControls />
+            <PolicyDetails onCompleted={() => handleNext(1)} />
+            <SpendingRules canBeOpened={completed > 0} onCompleted={() => handleNext(2)} />
+            <SmartContractRules canBeOpened={completed > 1} onCompleted={() => handleNext(3)} />
+            <AccessControls canBeOpened={completed > 2} onCompleted={() => handleNext(4)} />
         </div>
     );
 }

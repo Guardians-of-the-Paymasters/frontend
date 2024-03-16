@@ -12,7 +12,12 @@ interface AbiItem {
     inputs: Array<{ internalType: string; name: string; type: string }>;
 }
 
-const SmartContractRules = () => {
+interface SmartContractRulesProps {
+    canBeOpened: boolean;
+    onCompleted: () => void;
+}
+
+const SmartContractRules = ({ canBeOpened, onCompleted }: SmartContractRulesProps) => {
     const [functionNames, setFunctionNames] = useState<string[]>([]);
     const [selectedFunctionNames, setSelectedFunctionNames] = useState<string[]>([]);
     const [abiString, setAbiString] = useState<string>("");
@@ -50,7 +55,7 @@ const SmartContractRules = () => {
     };
 
     return (
-        <SectionAccordion title="Smart Contract Rules">
+        <SectionAccordion disabled={!canBeOpened} title="Smart Contract Rules">
             <div className="flex flex-col gap-10">
                 <Form title="Smart Contract Allowed to Spend Gas" placeholder="0xabc...efg" />
                 <Form title="NFT #ID to own to spend gas" placeholder="0" type="number" />
@@ -100,7 +105,7 @@ const SmartContractRules = () => {
                     )}
                 </div>
 
-                <Button text="Next" />
+                <Button text="Next" onClick={onCompleted} />
             </div>
         </SectionAccordion>
     );
