@@ -26,7 +26,8 @@ export async function POST(req: NextRequest) {
       contractAddress: body.contractAddress,
       sponsoredMethods: body.sponsoredMethods,
       abi: body.abi,
-      address: body.userAddress
+      address: body.userAddress,
+      policyName: body.policyName
     });
 
     return NextResponse.json({ id: docRef.id, message: "Method added successfully." });
