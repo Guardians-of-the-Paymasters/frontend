@@ -18,8 +18,6 @@
     "importOrderSortSpecifiers": true,
     "importOrder": ["^react$", "react", "^next$", "next", "<THIRD_PARTY_MODULES>", "theme", "^contexts", "^[./]"],
     "importOrderCaseInsensitive": true,
-
     "plugins": ["prettier-plugin-tailwindcss"],
-
     "pluginSearchDirs": false
 }
