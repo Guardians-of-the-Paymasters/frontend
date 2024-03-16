@@ -22,7 +22,7 @@ export type TextSizeType =
     | "caption1"
     | "caption2";
 
-interface AavegotchiTextBodyProps {
+interface TextBodyProps {
     size?: TextSizeType;
     inline?: boolean;
     className?: string;
@@ -30,7 +30,7 @@ interface AavegotchiTextBodyProps {
     color?: string;
 }
 
-const Text = ({ size = "body3", children, className, color = "text-white", inline = false }: AavegotchiTextBodyProps) => {
+const Text = ({ size = "body3", children, className, color = "text-white", inline = false }: TextBodyProps) => {
     const classes = `${inline ? "inline" : "block"} ${color} ${className} ${getTextsizes(
         size
     )} ${size.indexOf("body") === -1 && size.indexOf("subtitle") === -1 ? "uppercase" : ""}`;
