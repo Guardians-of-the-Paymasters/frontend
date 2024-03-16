@@ -26,8 +26,10 @@ export async function POST(req: NextRequest) {
       contractAddress: body.contractAddress,
       sponsoredMethods: body.sponsoredMethods,
       abi: body.abi,
-      address: body.userAddress,
-      policyName: body.policyName
+      policyName: body.policyName,
+      maxGasPerUser: body.maxGasPerUser,
+      maxGasPerPolicy: body.maxGasPerPolicy,
+      allowlist: body.allowlist
     });
 
     return NextResponse.json({ id: docRef.id, message: "Method added successfully." });
