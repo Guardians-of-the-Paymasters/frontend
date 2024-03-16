@@ -1,22 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowDownSvg } from "./svgs";
 import Text from "./Text";
 
 interface SectionAccordionProps {
     title: string;
     children: React.ReactNode;
-    defaultOpen?: boolean;
+    disabled?: boolean;
 }
 
-const SectionAccordion = ({ title, children, defaultOpen = false }: SectionAccordionProps) => {
-    const [open, setOpen] = useState(defaultOpen);
+const SectionAccordion = ({ title, children, disabled }: SectionAccordionProps) => {
+    const [open, setOpen] = useState(false);
+
+    useEffect(() => {
+        if (!disabled) setOpen(true);
+    }, [disabled]);
 
     return (
         <div className="my-4 flex flex-col">
             <div
                 onClick={() => {
+                    if (disabled) return;
                     setOpen(!open);
                 }}
                 className="flex w-full cursor-pointer flex-row justify-between rounded-lg border-b-2 border-zinc-800 bg-zinc-900 px-4 pb-2 pt-4"
