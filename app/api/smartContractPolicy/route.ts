@@ -2,7 +2,7 @@
 
 import { NextApiRequest } from 'next';
 import { db } from '../../../firebaseConfig';
-import { collection, addDoc, doc, getDoc } from 'firebase/firestore';
+import { collection, addDoc, doc, getDoc, setDoc } from 'firebase/firestore';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
@@ -35,6 +35,16 @@ export async function POST(req: NextRequest) {
       policyEnd: body.policyEnd,
     });
 
+
+    
+    for (const addr of body.allowlist){
+      const userRef = doc(db, 'Users', addr);
+      const userSnap = await getDoc(userRef);
+  
+      if (!userSnap.exists()) {
+        await setDoc(userRef, { userAddress: addr, createdAt: new Date() });
+      }
+    }
     return NextResponse.json({ id: docRef.id, message: "Method added successfully." });
   } catch (error) {
     console.error("Error adding allowed method: ", error);

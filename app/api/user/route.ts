@@ -12,7 +12,6 @@ export async function POST(req: Request) {
       // Attempt to add a document to the "test" collection
       await addDoc(collection(db, "Users"), {
         addresss: body.userAddress,
-        spendingLimit: body.spendingLimit
       });
       return NextResponse.json({ message: 'Document added successfully.' }, {status: 200});
     } catch (error) {
