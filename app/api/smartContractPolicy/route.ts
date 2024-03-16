@@ -11,16 +11,6 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
 
-
-    // Check to make sure user exists
-    console.log(body.userAddress)
-    const userRef = doc(db, "Users", body.userAddress);
-    const userSnap = await getDoc(userRef);
-    if (!userSnap.exists()) {
-      // User does not exist, return an error
-      return NextResponse.json({ error: "User does not exist" });
-    }
-
     // Add an allowed method to the Firestore
     const docRef = await addDoc(collection(db, "SmartContractPolicy"), {
       contractAddress: body.contractAddress,
