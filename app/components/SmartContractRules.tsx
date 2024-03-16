@@ -66,7 +66,7 @@ const SmartContractRules = ({ canBeOpened, onCompleted }: SmartContractRulesProp
                         </Text>
                         <Form
                             className="!w-full"
-                            onChange={(e) => setAbiString(e.target.value)}
+                            onChange={setAbiString}
                             title="Smart contract abi"
                             placeholder={`[{
                             inputs: [

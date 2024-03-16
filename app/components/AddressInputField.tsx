@@ -56,12 +56,11 @@ const AddressInputFields = ({ addressesState }: AddressInputFieldsProps) => {
     return (
         <div className="w-3/5 cursor-pointer rounded-lg border border-zinc-800 bg-zinc-900 px-6 py-2 text-white">
             {addresses.map((address, index) => (
-                <div className="flex items-center">
+                <div key={index} className="flex items-center">
                     <Text size="caption1" className="uppercase text-white">
                         {index + 1}
                     </Text>
                     <input
-                        key={index}
                         type="text"
                         value={address}
                         onChange={(event) => handleChange(index, event)}
