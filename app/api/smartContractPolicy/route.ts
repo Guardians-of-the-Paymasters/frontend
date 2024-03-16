@@ -29,7 +29,10 @@ export async function POST(req: NextRequest) {
       policyName: body.policyName,
       maxGasPerUser: body.maxGasPerUser,
       maxGasPerPolicy: body.maxGasPerPolicy,
-      allowlist: body.allowlist
+      allowlist: body.allowlist,
+      nftIds: body.nftIds,
+      policyStart: body.policyStart,
+      policyEnd: body.policyEnd,
     });
 
     return NextResponse.json({ id: docRef.id, message: "Method added successfully." });
