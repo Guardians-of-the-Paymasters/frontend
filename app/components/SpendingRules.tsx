@@ -1,7 +1,6 @@
 import SectionAccordion from "./common/SectionAccordion";
 import Button from "./common/Button";
 import Form from "./common/Form";
-import Text from "./common/Text";
 
 const SpendingRules = () => {
     return (
