@@ -56,6 +56,25 @@ const Text = ({ size = "body3", children, className, color = "text-white", inlin
         return <p className={classes}>{children}</p>;
     }
 
+    interface HeadingProps {
+        children: React.ReactNode;
+        className?: string;
+    }
+
+    const HeadingMap = {
+        h1: (props: HeadingProps) => <h1 {...props} />,
+        h2: (props: HeadingProps) => <h2 {...props} />,
+        h3: (props: HeadingProps) => <h3 {...props} />,
+        h4: (props: HeadingProps) => <h4 {...props} />,
+        h5: (props: HeadingProps) => <h5 {...props} />,
+        h6: (props: HeadingProps) => <h6 {...props} />,
+    };
+
+    if (["h1", "h2", "h3", "h4", "h5", "h6"].includes(size)) {
+        const Component = HeadingMap[size as keyof typeof HeadingMap] || HeadingMap.h1;
+        if (Component) return <Component className={classes}>{children}</Component>;
+    }
+
     return <p className={`${color} font-kanit font-light ${size} ${className}`}>{children}</p>;
 };
 
