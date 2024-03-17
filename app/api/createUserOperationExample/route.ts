@@ -21,11 +21,11 @@ import {
     http,
 } from "viem";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
-import { sepolia, polygonMumbai } from "viem/chains";
+import { baseSepolia, polygonMumbai } from "viem/chains";
 
 export const publicClient = createPublicClient({
-    transport: http("https://rpc.ankr.com/eth_sepolia"),
-    chain: sepolia,
+    transport: http("https://rpc.ankr.com/eth_baseSepolia"),
+    chain: baseSepolia,
 });
 
 
@@ -38,11 +38,11 @@ export async function POST(req: NextRequest) {
 
     const apiKey = process.env.PIMLICO_API_KEY; // REPLACE THIS
 
-    const endpointUrl = `https://api.pimlico.io/v2/sepolia/rpc?apikey=${apiKey}`;
+    const endpointUrl = `https://api.pimlico.io/v2/baseSepolia/rpc?apikey=${apiKey}`;
 
     const bundlerClient = createClient({
         transport: http(endpointUrl),
-        chain: sepolia,
+        chain: baseSepolia,
     })
         .extend(bundlerActions(ENTRYPOINT_ADDRESS_V07))
         .extend(pimlicoBundlerActions(ENTRYPOINT_ADDRESS_V07));
