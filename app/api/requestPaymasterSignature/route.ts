@@ -26,7 +26,7 @@ import {
     parseEther
 } from "viem";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
-import { sepolia } from "viem/chains";
+import { baseSepolia } from "viem/chains";
 import { signerToSafeSmartAccount } from "permissionless/accounts"
 import {
     createPimlicoBundlerClient,
@@ -43,6 +43,7 @@ export const replacer: (key: string, value: any) => any = (key, value) => {
 export async function POST(req: NextRequest) {
     console.log("IN FUNC")
 
+    const sepolia = baseSepolia;
     const apiKey = process.env.PIMLICO_API_KEY;
     const endpointUrl = `https://api.pimlico.io/v2/sepolia/rpc?apikey=${apiKey}`;
 
@@ -180,7 +181,11 @@ export async function POST(req: NextRequest) {
 
     const to = "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"; // vitalik
     const value = BigInt(0);
-    const data = "0x68656c6c6f"; // "hello" encoded to utf-8 bytes
+    //  "hello" encoded to utf-8 bytes
+
+    if(body.functionData !==  "0x68656c6c6f"){
+        return NextResponse.json({message: "NO DATA MATCHES FOUND"}, {status: 500})
+    }
 
     const callData = encodeFunctionData({
         abi: [
@@ -196,7 +201,7 @@ export async function POST(req: NextRequest) {
                 type: "function",
             },
         ],
-        args: [to, value, data],
+        args: [to, value, body.functionData],
     });
 
     console.log("Generated callData:", callData);

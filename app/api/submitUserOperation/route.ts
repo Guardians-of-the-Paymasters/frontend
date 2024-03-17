@@ -23,7 +23,7 @@ import {
     http,
 } from "viem";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
-import { baseSepolia } from "viem/chains";
+import { sepolia } from "viem/chains";
 
 
 
@@ -56,16 +56,16 @@ export async function POST(req: NextRequest) {
     }
 
     const publicClient = createPublicClient({
-        transport: http("https://rpc.ankr.com/eth_baseSepolia"),
-        chain: baseSepolia,
+        transport: http("https://rpc.ankr.com/eth_sepolia"),
+        chain: sepolia,
     });
 
     const apiKey = process.env.PIMLICO_API_KEY; // REPLACE THIS
-    const endpointUrl = `https://api.pimlico.io/v2/baseSepolia/rpc?apikey=${apiKey}`;
+    const endpointUrl = `https://api.pimlico.io/v2/sepolia/rpc?apikey=${apiKey}`;
 
     const bundlerClient = createClient({
         transport: http(endpointUrl),
-        chain: baseSepolia,
+        chain: sepolia,
     })
         .extend(bundlerActions(ENTRYPOINT_ADDRESS_V07))
         .extend(pimlicoBundlerActions(ENTRYPOINT_ADDRESS_V07));
@@ -87,7 +87,7 @@ export async function POST(req: NextRequest) {
     const txHash = receipt.receipt.transactionHash;
 
     console.log(
-        `userOperation included: https://baseSepolia.etherscan.io/tx/${txHash}`
+        `userOperation included: https://sepolia.etherscan.io/tx/${txHash}`
     );
 
     return NextResponse.json({ message: "DONE ", }, { status: 200 });
