@@ -116,7 +116,7 @@ const SmartContractRules = ({ canBeOpened, onCompleted }: SmartContractRulesProp
                     )}
                 </div>
 
-                <Button text="Next" disabled={smartContractAddress.length == 0 || nftIds[0].length == 0} onClick={onCompleted} />
+                <Button text="Next" disabled={smartContractAddress.length == 0} onClick={onCompleted} />
             </div>
         </SectionAccordion>
     );

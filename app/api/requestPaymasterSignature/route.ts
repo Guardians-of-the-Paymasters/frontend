@@ -11,39 +11,21 @@ import {
     signUserOperationHashWithECDSA,
     createSmartAccountClient,
 } from "permissionless";
-import {
-    pimlicoBundlerActions,
-    pimlicoPaymasterActions,
-} from "permissionless/actions/pimlico";
-import {
-    Address,
-    Hex,
-    createClient,
-    createPublicClient,
-    encodeFunctionData,
-    http,
-    getContract,
-    parseEther
-} from "viem";
+import { pimlicoBundlerActions, pimlicoPaymasterActions } from "permissionless/actions/pimlico";
+import { Address, Hex, createClient, createPublicClient, encodeFunctionData, http, getContract, parseEther } from "viem";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
-import { baseSepolia } from "viem/chains";
-import { signerToSafeSmartAccount } from "permissionless/accounts"
-import {
-    createPimlicoBundlerClient,
-    createPimlicoPaymasterClient,
-} from "permissionless/clients/pimlico"
+import { sepolia } from "viem/chains";
+import { signerToSafeSmartAccount } from "permissionless/accounts";
+import { createPimlicoBundlerClient, createPimlicoPaymasterClient } from "permissionless/clients/pimlico";
 import { ethers } from "ethers";
 
-
-
 export const replacer: (key: string, value: any) => any = (key, value) => {
-    return typeof value === 'bigint' ? value.toString() : value;
+    return typeof value === "bigint" ? value.toString() : value;
 };
 
 export async function POST(req: NextRequest) {
-    console.log("IN FUNC")
+    console.log("IN FUNC");
 
-    const sepolia = baseSepolia;
     const apiKey = process.env.PIMLICO_API_KEY;
     const endpointUrl = `https://api.pimlico.io/v2/sepolia/rpc?apikey=${apiKey}`;
 
@@ -54,45 +36,43 @@ export async function POST(req: NextRequest) {
         .extend(bundlerActions(ENTRYPOINT_ADDRESS_V07))
         .extend(pimlicoBundlerActions(ENTRYPOINT_ADDRESS_V07));
 
-    if (req.method !== 'POST') {
-        return NextResponse.json({ message: 'Method Not Allowed' }, { status: 405 });
+    if (req.method !== "POST") {
+        return NextResponse.json({ message: "Method Not Allowed" }, { status: 405 });
     }
 
-
-    console.log("IN FUNC")
-    if (req.method !== 'POST') {
-        return NextResponse.json({ message: 'Method Not Allowed' }, { status: 405 });
+    console.log("IN FUNC");
+    if (req.method !== "POST") {
+        return NextResponse.json({ message: "Method Not Allowed" }, { status: 405 });
     }
 
-    const body = await req.json()
-    console.log("THE BODY ", body)
+    const body = await req.json();
+    console.log("THE BODY ", body);
 
     if (body.deploySafe) {
-
         const safePublicClient = createPublicClient({
             transport: http("https://rpc.ankr.com/eth_sepolia"),
-        })
+        });
 
         const safePaymasterClient = createPimlicoPaymasterClient({
             transport: http(`https://api.pimlico.io/v2/sepolia/rpc?apikey=${apiKey}`),
             entryPoint: ENTRYPOINT_ADDRESS_V06,
-        })
+        });
 
         const bundlerClient = createPimlicoBundlerClient({
             transport: http(`https://api.pimlico.io/v1/sepolia/rpc?apikey=${apiKey}`),
             entryPoint: ENTRYPOINT_ADDRESS_V06,
-        })
+        });
 
-        const privKey = generatePrivateKey()
-        const signer = privateKeyToAccount(privKey)
-        const gasPrices = await bundlerClient.getUserOperationGasPrice()
+        const privKey = generatePrivateKey();
+        const signer = privateKeyToAccount(privKey);
+        const gasPrices = await bundlerClient.getUserOperationGasPrice();
 
         const safeAccount = await signerToSafeSmartAccount(safePublicClient, {
             entryPoint: ENTRYPOINT_ADDRESS_V06,
             signer: signer,
             saltNonce: BigInt("0"), // optional
             safeVersion: "1.4.1",
-        })
+        });
 
         const smartAccountClient = createSmartAccountClient({
             account: safeAccount,
@@ -103,14 +83,14 @@ export async function POST(req: NextRequest) {
                 gasPrice: async () => (await bundlerClient.getUserOperationGasPrice()).fast, // use pimlico bundler to get gas prices
                 sponsorUserOperation: safePaymasterClient.sponsorUserOperation, // optional
             },
-        })
+        });
 
         const safeTxHash = await smartAccountClient.sendTransaction({
             to: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
             value: parseEther("0.1"),
             maxFeePerGas: gasPrices.fast.maxFeePerGas, // if using Pimlico
             maxPriorityFeePerGas: gasPrices.fast.maxPriorityFeePerGas, // if using Pimlico
-        })
+        });
 
         const txHash = await smartAccountClient.sendTransactions({
             transactions: [
@@ -127,8 +107,8 @@ export async function POST(req: NextRequest) {
             ],
             maxFeePerGas: gasPrices.fast.maxFeePerGas, // if using Pimlico
             maxPriorityFeePerGas: gasPrices.fast.maxPriorityFeePerGas, // if using Pimlico
-        })
-        console.log(txHash)
+        });
+        console.log(txHash);
     }
 
     const publicClient = createPublicClient({
@@ -136,21 +116,12 @@ export async function POST(req: NextRequest) {
         chain: sepolia,
     });
 
-
-
     const paymasterClient = createClient({
         transport: http(endpointUrl),
         chain: sepolia,
     }).extend(pimlicoPaymasterActions(ENTRYPOINT_ADDRESS_V07));
 
-
-
-
-
-    const SIMPLE_ACCOUNT_FACTORY_ADDRESS =
-        "0x91E60e0613810449d098b0b5Ec8b51A0FE8c8985";
-
-
+    const SIMPLE_ACCOUNT_FACTORY_ADDRESS = "0x91E60e0613810449d098b0b5Ec8b51A0FE8c8985";
 
     const factory = SIMPLE_ACCOUNT_FACTORY_ADDRESS;
     const factoryData = encodeFunctionData({
@@ -183,8 +154,8 @@ export async function POST(req: NextRequest) {
     const value = BigInt(0);
     //  "hello" encoded to utf-8 bytes
 
-    if(body.functionData !==  "0x68656c6c6f"){
-        return NextResponse.json({message: "NO DATA MATCHES FOUND"}, {status: 500})
+    if (body.functionData !== "0x68656c6c6f") {
+        return NextResponse.json({ message: "NO DATA MATCHES FOUND" }, { status: 500 });
     }
 
     const callData = encodeFunctionData({
@@ -250,8 +221,7 @@ export async function POST(req: NextRequest) {
 
     console.log("Received paymaster sponsor result:", sponsorUserOperationResult);
 
-    sponsorUserOperationResult
+    sponsorUserOperationResult;
 
-    return NextResponse.json({ message: JSON.parse(JSON.stringify(sponsoredUserOperation, replacer)), }, { status: 200 });
-
+    return NextResponse.json({ message: JSON.parse(JSON.stringify(sponsoredUserOperation, replacer)) }, { status: 200 });
 }
