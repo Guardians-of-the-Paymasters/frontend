@@ -1,5 +1,18 @@
 import { NextResponse, NextRequest } from "next/server";
 import { Network, Alchemy } from "alchemy-sdk";
+import { db } from "@/firebaseConfig";
+import { collection, getDocs } from "@firebase/firestore";
+
+interface SmartContractPolicy {
+    id: string; // Document ID
+    maxGasPerPolicy: string;
+    contractAddress: string;
+    sponsoredMethods: string[];
+    abi: string;
+    maxGasPerUser: string;
+    allowlist: string[];
+  }
+
 
 export async function POST(request: NextRequest) {
     try {
@@ -23,26 +36,35 @@ export async function POST(request: NextRequest) {
         console.log("...");
 
         // Print contract address and tokenId for each NFT:
-        for (const nft of nftsForOwner.ownedNfts) {
-            console.log("===");
-            console.log("contract address:", nft.contract.address);
-            console.log("token ID:", nft.tokenId);
+
+        const policyCollectionRef = collection(db, "SmartContractPolicy");
+        const snapshot = await getDocs(policyCollectionRef);
+        if (snapshot.empty) {
+          return NextResponse.json({ error: "No policies found" }, { status: 404 });
         }
-        console.log("===");
+    
+        // Map through documents to get data
+        const policies: SmartContractPolicy[] = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...(doc.data() as Omit<SmartContractPolicy, 'id'>), // Cast doc.data() to the expected type, excluding 'id'
+        }));
 
-        // Uncomment this line to see the full api response:
-        // console.log(response);
+        for (const policy of policies)
+        {
+            for (const nft of nftsForOwner.ownedNfts) {
+                if(policy.contractAddress === nft.contract.address){
+                    return NextResponse.json(
+                        { message: true },
+                        { status: 201 }
+                    )
+                }
+            }
+        }
 
-        // console.log("NFT name: ", response.title);
-        // console.log("token type: ", response.tokenType);
-        // console.log("tokenUri: ", response.tokenUri.gateway);
-        // console.log("image url: ", response.rawMetadata.image);
-        // console.log("time last updated: ", response.timeLastUpdated);
-        // console.log("===");
-
-
-
-
+        return NextResponse.json(
+            { message: false },
+            { status: 201 }
+        )
     } catch (e) {
         console.log(e);
         return NextResponse.json(

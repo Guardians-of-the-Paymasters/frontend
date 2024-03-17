@@ -1,5 +1,6 @@
 import { JsonRpcProvider, ethers } from 'ethers';
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from 'next/server';
 
 const NFT_CONTRACT_ADDRESS = '0x18A8DB760033d186635949e0369c44AfdE4C9e96';
 const NFT_CONTRACT_ABI = [
@@ -443,12 +444,9 @@ const NFT_CONTRACT_ABI = [
 	}
 ];
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method Not Allowed' });
-  }
 
-  const { privateKey, toAddress, tokenId, tokenURI } = req.body;
+export async function POST(request: NextRequest) {
+  const { privateKey, toAddress, tokenId, tokenURI } = await request.json();
 
   // Initialize ethers provider
   const provider = new JsonRpcProvider(process.env.INFURA_URL);
@@ -460,9 +458,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const tx = await contract.mint(toAddress, tokenId, tokenURI);
     await tx.wait();
 
-    return res.status(200).json({ success: true, transactionHash: tx.hash });
+    return NextResponse.json({ success: true, transactionHash: tx.hash },{status:200});
   } catch (error) {
     console.error('Minting error:', error);
-    return res.status(500).json({ error: 'Failed to mint token' });
+    return NextResponse.json({ error: 'Failed to mint token' },{status:500});
   }
 }

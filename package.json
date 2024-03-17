@@ -7,22 +7,29 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "export": "next export"
   },
   "dependencies": {
     "@commitlint/config-conventional": "^19.1.0",
     "@firebase/firestore": "^4.5.0",
+    "@openchainxyz/abi-guesser": "^1.0.2",
     "alchemy-sdk": "^3.2.0",
     "axios": "^1.6.8",
     "ethers": "^6.11.1",
+    "ethers-legacy": "npm:ethers@^5.7.2",
     "firebase": "^10.9.0",
     "next": "14.1.3",
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.12",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "dotenv": "^16.3.1",
+    "permissionless": "^0.1.4",
+    "viem": "^2.0.0"
   },
   "devDependencies": {
+    "@types/jquery": "^3.5.29",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
